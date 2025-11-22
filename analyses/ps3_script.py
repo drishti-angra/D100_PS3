@@ -1,4 +1,11 @@
 # %%
+import sys
+import os
+
+# Automatically add project root to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -10,12 +17,22 @@ from sklearn.metrics import auc
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, SplineTransformer, StandardScaler
+import hashlib
 
-from ps3.data import create_sample_split, load_transform
+from ps3.data._load_transform import load_transform
+from ps3.data._sample_split import deterministic_split, create_sample_split 
 
 # %%
 # load data
 df = load_transform()
+df.head(5)
+
+# %%
+#define the train test split on the data 
+df = create_sample_split(df, 'IDpol')
+df.head(5)
+
+
 
 # %%
 # Train benchmark tweedie model. This is entirely based on the glum tutorial.
@@ -26,7 +43,8 @@ y = df["PurePremium"]
 
 
 # TODO: use your create_sample_split function here
-# df = create_sample_split(...)
+    #done above 
+
 train = np.where(df["sample"] == "train")
 test = np.where(df["sample"] == "test")
 df_train = df.iloc[train].copy()
@@ -248,5 +266,4 @@ ax.set(
 )
 ax.legend(loc="upper left")
 plt.plot()
-
-# %%
+#%%
